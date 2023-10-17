@@ -1,8 +1,9 @@
 import numpy as np
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
-import tkinter as tk
-from tkinter import filedialog
+
+from tkinter import *
+
 
 def draw_signal(path, plot_choice):
     # Initialize empty lists to store x and y values
@@ -87,6 +88,24 @@ def draw_signal(path, plot_choice):
 
     else:
         print("Invalid choice. Enter 'd' for discrete plot or 'c' for continuous plot.")
-draw_signal("signal1.txt", 'd')
+        draw_signal("signal1.txt", 'd')
+
+
+#########################
+
+
+root=Tk()
+e=Entry(root,width=80,borderwidth=30) #Allowing for input place
+e.pack()
+root.title("DSP Task 1")  # changing the title of the form
+
+def onClick(): ## what will happen after clicking the button function
+    path,char=e.get().split(' ') # get the text from the input area
+    draw_signal(path,char)  ###(((((Calling the function)))))
+
+myButton=Button(root,text=" Click on me Path ",command=onClick) 
+myButton.pack()
+
+root.mainloop()
 
 
