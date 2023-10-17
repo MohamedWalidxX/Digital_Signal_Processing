@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import comparesignals
+
 
 def generate_sinusoidal_signal(A, theta, f, fs, duration):
     """
@@ -34,15 +34,3 @@ theta = 1.96349540849362  # Phase shift (in radians)
 f = 360  # Analog frequency (5 Hz)
 fs = 720  # Sampling frequency (must satisfy Nyquist: fs >= 2*f)
 duration = 1.0  # Duration of the signal (in seconds)
-
-t, signal = generate_sinusoidal_signal(A, theta, f, fs, duration)
-
-# Plot the signal
-plt.figure(figsize=(8, 6))
-plt.plot(t, signal)
-plt.xlabel('Time (s)')
-plt.ylabel('Amplitude')
-plt.title('Sinusoidal Signal')
-plt.grid(True)
-plt.show()
-comparesignals.SignalSamplesAreEqual(file_name="SinOutput.txt", indices=0, samples=signal)
