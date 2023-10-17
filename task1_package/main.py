@@ -2,11 +2,14 @@ import numpy as np
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 
+import cosine_wave as cs
+
 from tkinter import *
 
 
 def draw_signal(path, plot_choice):
     # Initialize empty lists to store x and y values
+    print("here ---------------------------------------------------------------------------->")
     x_values = []
     y_values = []
 
@@ -98,12 +101,45 @@ root=Tk()
 e=Entry(root,width=80,borderwidth=30) #Allowing for input place
 e.pack()
 root.title("DSP Task 1")  # changing the title of the form
+choice=1
+
+
 
 def onClick(): ## what will happen after clicking the button function
-    path,char=e.get().split(' ') # get the text from the input area
-    draw_signal(path,char)  ###(((((Calling the function)))))
+    arr=e.get().split(' ') # get the text from the input area
+    if choice==1:
+         t, signal = si.generate_sinusoidal_signal(int(arr[0]),  int(arr[1]), int(arr[2]), int(arr[3]), int(arr[4]))
+         plt.figure(figsize=(8, 6))
+         plt.plot(t, signal)
+         plt.xlabel('Time (s)')
+         plt.ylabel('Amplitude')
+         plt.title('Sinusoidal Signal')
+         plt.grid(True)
+         plt.show()
+    #comparesignals.SignalSamplesAreEqual(file_name="CosOutput.txt", indices=0, samples=signal)
+    else:
+         t, signal = cs.generate_sinusoidal_signal(int(arr[0]),  int(arr[1]), int(arr[2]), int(arr[3]), int(arr[4]))
+         plt.figure(figsize=(8, 6))
+         plt.plot(t, signal)
+         plt.xlabel('Time (s)')
+         plt.ylabel('Amplitude')
+         plt.title('cosine Signal')
+         plt.grid(True)
+         plt.show()
 
-myButton=Button(root,text=" Click on me Path ",command=onClick) 
+
+def sinClick():
+    choice=1
+def cosClick():
+    choice=2
+
+
+myButton=Button(root,text=" Click on me To show Signal ",command=onClick) 
+sinButton=Button(root,text=" Sin ",command=sinClick) 
+cosButton=Button(root,text=" Cos ",command=cosClick) 
+
+sinButton.pack()
+cosButton.pack()
 myButton.pack()
 
 root.mainloop()

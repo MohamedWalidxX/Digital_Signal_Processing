@@ -34,15 +34,3 @@ theta = 2.35619449019235  # Phase shift (in radians)
 f = 200  # Analog frequency (5 Hz)
 fs = 500  # Sampling frequency (must satisfy Nyquist: fs >= 2*f)
 duration = 1.0  # Duration of the signal (in seconds)
-
-t, signal = generate_sinusoidal_signal(A, theta, f, fs, duration)
-
-# Plot the signal
-plt.figure(figsize=(8, 6))
-plt.plot(t, signal)
-plt.xlabel('Time (s)')
-plt.ylabel('Amplitude')
-plt.title('cosine Signal')
-plt.grid(True)
-plt.show()
-comparesignals.SignalSamplesAreEqual(file_name="CosOutput.txt", indices=0, samples=signal)
