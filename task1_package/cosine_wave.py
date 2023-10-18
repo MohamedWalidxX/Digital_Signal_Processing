@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def generate_sinusoidal_signal(A, theta, f, fs, duration):
+def generate_cosine_signal(A, theta, f, fs, duration):
     """
     Generate a sinusoidal signal.
 
