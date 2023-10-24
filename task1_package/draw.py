@@ -87,5 +87,6 @@ def draw_signal(path, plot_choice):
 
     else:
         print("Invalid choice. Enter 'd' for discrete plot or 'c' for continuous plot.")
+
 draw_signal("signal1.txt", 'd')
 

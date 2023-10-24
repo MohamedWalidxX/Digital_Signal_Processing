@@ -2,7 +2,9 @@ from draw import draw_signal
 from cosine_wave import generate_cosine_signal
 from sino_waves import generate_sinusoidal_signal
 from comparesignals import SignalSamplesAreEqual
-button = 3
+
+
+button = 2
 if button == 1:
     draw_signal("signal1.txt",'m')
 elif button == 2:
