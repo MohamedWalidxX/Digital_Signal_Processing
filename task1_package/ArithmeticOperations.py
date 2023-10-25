@@ -71,11 +71,10 @@ def shift_signal(path, shiftAmount):
 
 def normalize(path, a, b):
     # Read the signal file
-    data = np.loadtxt(path)
+    x,y = readFile_returnArray(path)
 
     # Extract x and y values from the signal file
-    x = data[:, 0]
-    y = data[:, 1]
+
 
     # Calculate the minimum and maximum values of y
     y_min = np.min(y)
@@ -94,10 +93,10 @@ def normalize(path, a, b):
 
 def accumulate(path):
     # Read the signal file
-    data = np.loadtxt(path)
+    x , y =readFile_returnArray(path)
 
     # Extract y values from the signal file
-    y = data[:, 1]
+
 
     # Calculate the accumulated sum
     accumulated_y = np.cumsum(y)
