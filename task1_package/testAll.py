@@ -7,7 +7,8 @@ from comparesignals import SignalSamplesAreEqual
 from ArithmeticOperations import *
 
 
-directory = "inOut/task2/"
+directory = "inOut/task3/"
 signalFile = "Signal1.txt"
 signalFile2 = "Signal2.txt"
-shift_signal(directory+signalFile, 500)
+file = "Quan1_input.txt"
+quantize_signal(directory+file, 3, 0)

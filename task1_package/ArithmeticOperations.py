@@ -31,6 +31,18 @@ def readFile_returnArray(path):
             y_values.append(y)
     return x_values, y_values
 
+def readFile_returnMinMax(path):
+    max_y = float('-inf')
+    min_y = float('inf')
+
+    # Step 2: Read the file and find max and min values
+    with open(path, 'r') as file:
+        lines = file.readlines()[3:]
+        for line in lines:
+            x, y = map(float, line.strip().split())
+            max_y = max(max_y, y)
+            min_y = min(min_y, y)
+    return min_y, max_y
 
 def addSignals(path1, path2):
     x1, y1 = readFile_returnArray(path1)
@@ -109,3 +121,46 @@ def accumulate(path):
     plt.show()
 
     return accumulated_y
+
+def quantize_signal(file_path, levels, isConverted):
+    if isConverted == 0:
+        levels = 2 ** levels
+    x, y = readFile_returnArray(file_path)
+    mini, maxi = readFile_returnMinMax(file_path)
+    # Calculate delta
+    delta = (maxi - mini) / levels
+
+    # Step 3: Create an array of pairs
+    quantization_levels = []
+
+    # Step 4: Fill the pairs
+    current_value = mini
+    for i in range(levels):
+        quantization_levels.append((current_value, current_value + delta))
+        current_value += delta
+
+    # Step 5: Create a list of averages
+    averages = [(pair[0] + pair[1]) / 2 for pair in quantization_levels]
+    quantized_y = []
+    group_of_Sample = []
+    encoded_group_of_samples = []
+    error_sum = 0
+    for i in range(len(y)):
+        miniDistanceAvg = 2e9
+        group = -1
+        for j in range(len(averages)):
+            if abs(y[i] - averages[j]) < miniDistanceAvg:
+                group = j
+                miniDistanceAvg = abs(y[i] - averages[j])
+        quantized_y.append(averages[group])
+        group_of_Sample.append(group)
+        encoded_group_of_samples.append(bin(group)[2:])
+        sample_error = y[i] - averages[group]
+        error_sum += sample_error ** 2
+
+    print(quantized_y)
+    print(encoded_group_of_samples)
+    print(error_sum/len(y))
+    draw_signal2(x,quantized_y)
+    return error_sum/len(y), encoded_group_of_samples
+

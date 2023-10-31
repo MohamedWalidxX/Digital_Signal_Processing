@@ -95,8 +95,8 @@ def draw_signal2(x_values,y_values):
         plt.figure(figsize=(8, 6))
         plt.plot(x_values, y_values, 'o', label='Sample Data')
         #
-        # for x, y in zip(x_values, y_values):
-        #     plt.vlines(x, 0, y, colors='r', linestyles='dashed')
+        for x, y in zip(x_values, y_values):
+            plt.vlines(x, 0, y, colors='r', linestyles='dashed')
 
         plt.xlabel('X-axis')
         plt.ylabel('Y-axis')
