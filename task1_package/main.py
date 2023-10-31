@@ -34,11 +34,13 @@ class GUI:
         sinButton = Button(self.root, text="Sin", command=self.sinClick)
         cosButton = Button(self.root, text="Cos", command=self.cosClick)
         emptyPageButton = Button(self.root, text="Arithmatic", command=self.goToEmptyPage)
+        quantizePage=Button(self.root, text="Quantize", command=self.goToQuantize)
 
         sinButton.pack()
         cosButton.pack()
         myButton.pack()
         emptyPageButton.pack()
+        quantizePage.pack()
 
     def onClick(self):
         arr = self.e.get().split(' ')
@@ -77,7 +79,7 @@ class GUI:
     def goToEmptyPage(self):
         # Code for opening an empty page or performing any desired action
         new_window = Toplevel(self.root)
-        new_window.title("Empty Page")
+        new_window.title("Arithmatic Page")
 
         label1 = Label(new_window, text="Argument 1:")
         label1.grid(row=0, column=0, padx=10, pady=10)
@@ -137,6 +139,46 @@ class GUI:
         Ar.normalize(path,int(a),int(b))
     def onCickAccumlate(self,path):
         Ar.accumulate(path)
+
+
+    def goToQuantize(self):
+        new_window = Toplevel(self.root)
+        new_window.title("Quantize Page")
+        label1 = Label(new_window, text="File Path :")
+        label1.grid(row=0, column=0, padx=10, pady=10)
+
+        entry1 = Entry(new_window)
+        entry1.grid(row=0, column=1, padx=10, pady=10)
+
+        label2 = Label(new_window, text="Levels:")
+        label2.grid(row=1, column=0, padx=10, pady=10)
+
+        entry2 = Entry(new_window)
+        entry2.grid(row=1, column=1, padx=10, pady=10)
+
+        label3 = Label(new_window, text="Is Converted  1 | 0:")
+        label3.grid(row=2, column=0, padx=10, pady=10)
+
+        entry3 = Entry(new_window)
+        entry3.grid(row=2, column=1, padx=10, pady=10)
+
+        result_label1 = Label(new_window, text="Error:")
+        result_label1.grid(row=4, column=0, padx=10, pady=10)
+
+        result_label2 = Label(new_window, text="Encoded Samples:")
+        result_label2.grid(row=5, column=0, padx=10, pady=10)
+
+      #  button1 = Button(new_window, text="<< Quantize >>",command=lambda: self.onClickQuantize(entry1.get(), entry2.get(),entry3.get()))
+        button1 = Button(new_window, text="<< Quantize >>",command=lambda: self.onClickQuantize(entry1.get(), entry2.get(), entry3.get(),result_label1,result_label2))
+        button1.grid(row=3, column=1, padx=10, pady=10)
+
+
+    def onClickQuantize(self,path,levels,is_converted,result_label1,result_label2):
+        error,encoded_group_of_samples=Ar.quantize_signal(path,int(levels),int(is_converted))
+        result_label1.config(text="Error: " + str(error))
+        result_label2.config(text="Encoded Samples: " + str(encoded_group_of_samples))
+
+
 
     def run(self):
         self.root.mainloop()
