@@ -31,6 +31,7 @@ def readFile_returnArray(path):
             y_values.append(y)
     return x_values, y_values
 
+
 def readFile_returnMinMax(path):
     max_y = float('-inf')
     min_y = float('inf')
@@ -43,6 +44,7 @@ def readFile_returnMinMax(path):
             max_y = max(max_y, y)
             min_y = min(min_y, y)
     return min_y, max_y
+
 
 def addSignals(path1, path2):
     x1, y1 = readFile_returnArray(path1)
@@ -59,7 +61,7 @@ def subtractSignals(path1, path2):
     x1, y1 = readFile_returnArray(path1)
     x2, y2 = readFile_returnArray(path2)
     y1, y2, condition = equalize_arrays(y1, y2)  # extend the samllest array with zeroes
-    y_plot = abs(np.subtract(y1,y2))
+    y_plot = abs(np.subtract(y1, y2))
     if condition == 1:
         draw_signal2(x2, y_plot)
     else:
@@ -71,22 +73,24 @@ def multiplySignal(path, constNum):
     y1 = np.array(y1) * constNum
     draw_signal2(x1, y1)
 
+
 def square_signal(path):
     x1, y1 = readFile_returnArray(path)
-    y1 = np.multiply(y1,y1)
+    y1 = np.multiply(y1, y1)
     draw_signal2(x1, y1)
+
 
 def shift_signal(path, shiftAmount):
     x1, y1 = readFile_returnArray(path)
     x1 = np.array(x1) - shiftAmount
     draw_signal2(x1, y1)
 
+
 def normalize(path, a, b):
     # Read the signal file
-    x,y = readFile_returnArray(path)
+    x, y = readFile_returnArray(path)
 
     # Extract x and y values from the signal file
-
 
     # Calculate the minimum and maximum values of y
     y_min = np.min(y)
@@ -105,10 +109,9 @@ def normalize(path, a, b):
 
 def accumulate(path):
     # Read the signal file
-    x , y =readFile_returnArray(path)
+    x, y = readFile_returnArray(path)
 
     # Extract y values from the signal file
-
 
     # Calculate the accumulated sum
     accumulated_y = np.cumsum(y)
@@ -121,6 +124,7 @@ def accumulate(path):
     plt.show()
 
     return accumulated_y
+
 
 def quantize_signal(file_path, levels, isConverted):
     if isConverted == 0:
@@ -160,7 +164,43 @@ def quantize_signal(file_path, levels, isConverted):
 
     print(quantized_y)
     print(encoded_group_of_samples)
-    print(error_sum/len(y))
-    draw_signal2(x,quantized_y)
-    return error_sum/len(y), encoded_group_of_samples
+    print(error_sum / len(y))
+    draw_signal2(x, quantized_y)
+    return error_sum / len(y), encoded_group_of_samples, quantized_y
 
+
+
+def discrete_fourier_transform(input_file, fs):
+    N = len(samples)
+    amplitudes = []
+    phases = []
+
+    for k in range(N):
+        real_part = 0
+        imag_part = 0
+
+        for n in range(N):
+            angle = 2 * np.pi * k * n / N
+            real_part += samples[n] * np.cos(angle)
+            imag_part -= samples[n] * np.sin(angle)
+
+        amplitude = np.sqrt(real_part ** 2 + imag_part ** 2)
+        phase = np.degrees(np.arctan2(imag_part, real_part))
+
+        amplitudes.append(amplitude)
+        phases.append(phase)
+
+    return amplitudes, phases
+
+
+# Example usage:
+samples = [0, 1, 2, 3]
+amplitudes, phases = discrete_fourier_transform(samples)
+print("Amplitudes:", amplitudes)
+print("Phases (in degrees):", phases)
+
+
+def inverse_discrete_fourier_transform(real, imaginary):
+    print("Not implemented yet")
+def modify_component(idx,amplitude,phase):
+    print("Not implemented yet")
