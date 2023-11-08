@@ -168,39 +168,82 @@ def quantize_signal(file_path, levels, isConverted):
     draw_signal2(x, quantized_y)
     return error_sum / len(y), encoded_group_of_samples, quantized_y
 
+def draw_amplitude_phase(amplitudes, phases, fs):
+    n = len(amplitudes)
+    X = 2 * np.pi / 1/fs * n
+    multiples_of_X = [X * i for i in range(1, n + 1)]
+    draw_signal2(multiples_of_X, amplitudes)
+    draw_signal2(multiples_of_X, phases)
 
+def create_file(amplitudes,phases):
+    path = "inOut/task4/polarForm.txt"
+    with open(path, 'w') as file:
+        # Write the user-chosen numbers
+        file.write("{}\n".format(0))  # Replace with your first number
+        file.write("{}\n".format(1))  # Replace with your second number
 
-def discrete_fourier_transform(input_file, fs):
+        # Write the size of the amplitudes or phases list
+        file.write("{}\n".format(len(amplitudes)))
+
+        # Write the amplitudes and phases
+        for amp, ph in zip(amplitudes, phases):
+            file.write("{} {}\n".format(amp, ph))
+
+def discrete_fourier_transform_reader(path):
+    x,y = readFile_returnArray(path)
+    amplitudes, phases, real_list, imaginary_list = discrete_fourier_transform(y)
+
+def discrete_fourier_transform(samples):
     N = len(samples)
     amplitudes = []
     phases = []
-
+    real_list = []
+    imaginary_list = []
     for k in range(N):
         real_part = 0
         imag_part = 0
-
         for n in range(N):
             angle = 2 * np.pi * k * n / N
             real_part += samples[n] * np.cos(angle)
             imag_part -= samples[n] * np.sin(angle)
 
+        real_part = round(real_part, 3)
+        imag_part = round(imag_part, 3)
+        real_list.append(real_part)
+        imaginary_list.append(imag_part)
         amplitude = np.sqrt(real_part ** 2 + imag_part ** 2)
-        phase = np.degrees(np.arctan2(imag_part, real_part))
+        phase = np.degrees(np.arctan(imag_part/real_part))
 
         amplitudes.append(amplitude)
         phases.append(phase)
+    draw_amplitude_phase(amplitudes,phases,4)
+    create_file(amplitudes,phases)
+    return amplitudes,phases, real_list, imaginary_list
 
-    return amplitudes, phases
-
-
-# Example usage:
-# samples = [0, 1, 2, 3]
-# amplitudes, phases = discrete_fourier_transform(samples)
-# print("Amplitudes:", amplitudes)
-# print("Phases (in degrees):", phases)
 
 
 def inverse_discrete_fourier_transform(real, imaginary):
-    print("Not implemented yet")
-def modify_component(idx,amplitude,phase):
-    print("Not implemented yet")
+    real2 = []
+    imaginary2 = []
+    N = len(real)
+    for n in range(N):
+        sum = 0
+        for k in range(N):
+            angle = 2 * np.pi * k * n / N
+            real_part = np.cos(angle)
+            imaginary_part = np.sin(angle)
+            real_part = round(real_part, 9)
+            imaginary_part = round(imaginary_part, 9)
+
+            sum += real_part * real[k] - imaginary_part * imaginary[k]
+        real2.append(sum/N)
+    return real2
+
+
+def modify_component(idx,amplitude,phase,amplitudes,phases):
+    draw_amplitude_phase(amplitudes,phases)
+    amplitudes[idx] = amplitude
+    phases[idx] = phase
+    draw_amplitude_phase(amplitudes,phases)
+
+
