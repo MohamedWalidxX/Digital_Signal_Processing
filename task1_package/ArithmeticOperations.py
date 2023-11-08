@@ -18,6 +18,17 @@ def equalize_arrays(arr1, arr2):
         condition = 2
     return arr1, arr2, condition
 
+def readFile_returnComplexComponents(path):
+    x_values = []
+    y_values = []
+    # Read the data from the file, skipping the first three lines
+    with open(path, "r") as file:
+        lines = file.readlines()[3:]  # Skip the first three lines
+        for line in lines:
+            x, y = map(float, line.strip().split())
+            x_values.append(x * np.cos(y))
+            y_values.append(x * np.sin(y))
+    return x_values, y_values
 
 def readFile_returnArray(path):
     x_values = []
@@ -189,11 +200,15 @@ def create_file(amplitudes,phases):
         for amp, ph in zip(amplitudes, phases):
             file.write("{} {}\n".format(amp, ph))
 
-def discrete_fourier_transform_reader(path):
-    x,y = readFile_returnArray(path)
-    amplitudes, phases, real_list, imaginary_list = discrete_fourier_transform(y)
+def discrete_fourier_transform_reader(path,fs,isInverse):
+    if isInverse == 0:
+        x, y = readFile_returnArray(path)
+        return discrete_fourier_transform(y,fs)
+    else:
+        real_list, imaginary_list = readFile_returnComplexComponents(path)
+        return inverse_discrete_fourier_transform(real_list,imaginary_list)
 
-def discrete_fourier_transform(samples):
+def discrete_fourier_transform(samples,fs):
     N = len(samples)
     amplitudes = []
     phases = []
@@ -212,15 +227,14 @@ def discrete_fourier_transform(samples):
         real_list.append(real_part)
         imaginary_list.append(imag_part)
         amplitude = np.sqrt(real_part ** 2 + imag_part ** 2)
-        phase = np.degrees(np.arctan(imag_part/real_part))
+        phase_rad = np.arctan2(imag_part,real_part)
+        phase_degree = np.degrees(phase_rad)
 
         amplitudes.append(amplitude)
-        phases.append(phase)
-    draw_amplitude_phase(amplitudes,phases,4)
+        phases.append(phase_rad)
+    draw_amplitude_phase(amplitudes,phases,fs)
     create_file(amplitudes,phases)
     return amplitudes,phases, real_list, imaginary_list
-
-
 
 def inverse_discrete_fourier_transform(real, imaginary):
     real2 = []
@@ -236,7 +250,8 @@ def inverse_discrete_fourier_transform(real, imaginary):
             imaginary_part = round(imaginary_part, 9)
 
             sum += real_part * real[k] - imaginary_part * imaginary[k]
-        real2.append(sum/N)
+        real2.append(round(sum/N, 7))
+    print(real2)
     return real2
 
 

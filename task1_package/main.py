@@ -233,16 +233,18 @@ class GUI:
                                                                   phase_entry.get()))
         action_button.grid(row=6, column=0, padx=10, pady=10, sticky="w")
 
+    to_be_modified_amplitudes = []
+    to_be_modified_phases = []
     def browse_file(self, path_entry):
         file_path = filedialog.askopenfilename()
         path_entry.delete(0, END)
         path_entry.insert(0, file_path)
     def onClickDFT(self,path,fs):
-        amplitudes, phases = Ar.discrete_fourier_transform(path, int(fs))
+        amplitudes, phases, real_list, imaginary_list = Ar.discrete_fourier_transform_reader(path, int(fs),0)
+
 
     def onClickIDFT(self,path,fs):
-        amplitudes, phases = Ar.discrete_fourier_transform(path, int(fs))
-        l1= Ar.inverse_discrete_fourier_transform(amplitudes,phases)
+        l1 = Ar.discrete_fourier_transform_reader(path, int(fs),1)
 
     def onClickModify(self,idx,amplitude,phase):
         list_amplitude= list(map(int,amplitude.split()))
