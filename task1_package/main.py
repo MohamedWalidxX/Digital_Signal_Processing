@@ -247,9 +247,10 @@ class GUI:
         l1 = Ar.discrete_fourier_transform_reader(path, int(fs),1)
 
     def onClickModify(self,idx,amplitude,phase):
-        list_amplitude= list(map(int,amplitude.split()))
-        list_phase= list(map(int,phase.split()))
-        Ar.modify_component(int(idx),list_amplitude,list_phase)
+        listAmpltiude=[] # hard coded list
+        listPhase=[] # hard coded list
+
+        Ar.modify_component(int(idx),int(amplitude),int(phase),listAmpltiude,listPhase)
     def run(self):
         self.root.mainloop()
 
