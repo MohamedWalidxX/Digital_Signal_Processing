@@ -9,7 +9,7 @@ from tkinter import *
 import ArithmeticOperations as Ar
 import cosine_wave as cs
 import sino_waves as si
-
+from tkinter import Toplevel, filedialog
 
 
 
@@ -35,12 +35,15 @@ class GUI:
         cosButton = Button(self.root, text="Cos", command=self.cosClick)
         emptyPageButton = Button(self.root, text="Arithmatic", command=self.goToEmptyPage)
         quantizePage=Button(self.root, text="Quantize", command=self.goToQuantize)
+        FrequencyDomain = Button(self.root, text="Frequency Domain", command=self.goTofrequencyDomain)
 
         sinButton.pack()
         cosButton.pack()
         myButton.pack()
         emptyPageButton.pack()
         quantizePage.pack()
+        FrequencyDomain.pack()
+
 
     def onClick(self):
         arr = self.e.get().split(' ')
@@ -178,11 +181,73 @@ class GUI:
         result_label1.config(text="Error: " + str(error))
         result_label2.config(text="Encoded Samples: " + str(encoded_group_of_samples))
 
+    def goTofrequencyDomain(self):
+        new_window = Toplevel(self.root)
+        new_window.title("Frequency Domain")
 
+        # File path widgets
+        path_label = Label(new_window, text="Enter File Path:")
+        path_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        path_entry = Entry(new_window, width=50)
+        path_entry.grid(row=0, column=1, padx=10, pady=10, columnspan=2)
 
-    def run(self):
-        self.root.mainloop()
+        browse_button = Button(new_window, text="Browse", command=lambda: self.browse_file(path_entry))
+        browse_button.grid(row=0, column=3, padx=10, pady=10, sticky="w")
 
+        # Sampling frequency widgets
+        fs_label = Label(new_window, text="Enter Sampling Frequency:")
+        fs_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+        fs_entry = Entry(new_window, width=10)
+        fs_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+
+        # DFT button
+        button1 = Button(new_window, text="DFT", command=lambda: self.onClickDFT(path_entry.get(), fs_entry.get()))
+        button1.grid(row=2, column=0, padx=10, pady=10, sticky="w")
+
+        # Inverse DFT button
+        button2 = Button(new_window, text="Inverse DFT",
+                         command=lambda: self.onClickIDFT(path_entry.get(), fs_entry.get()))
+        button2.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+
+        # Index widgets
+        index_label = Label(new_window, text="Enter Index:")
+        index_label.grid(row=3, column=0, padx=10, pady=10, sticky="w")
+        index_entry = Entry(new_window, width=10)
+        index_entry.grid(row=3, column=1, padx=10, pady=10, sticky="w")
+
+        # Amplitude widgets
+        amplitude_label = Label(new_window, text="Enter Amplitude:")
+        amplitude_label.grid(row=4, column=0, padx=10, pady=10, sticky="w")
+        amplitude_entry = Entry(new_window, width=10)
+        amplitude_entry.grid(row=4, column=1, padx=10, pady=10, sticky="w")
+
+        # Phase widgets
+        phase_label = Label(new_window, text="Enter Phase:")
+        phase_label.grid(row=5, column=0, padx=10, pady=10, sticky="w")
+        phase_entry = Entry(new_window, width=10)
+        phase_entry.grid(row=5, column=1, padx=10, pady=10, sticky="w")
+
+        # Modify button
+        action_button = Button(new_window, text="Modify",
+                               command=lambda: self.onClickModify(index_entry.get(), amplitude_entry.get(),
+                                                                  phase_entry.get()))
+        action_button.grid(row=6, column=0, padx=10, pady=10, sticky="w")
+
+    def browse_file(self, path_entry):
+        file_path = filedialog.askopenfilename()
+        path_entry.delete(0, END)
+        path_entry.insert(0, file_path)
+    def onClickDFT(self,path,fs):
+        amplitudes, phases = Ar.discrete_fourier_transform(path, int(fs))
+
+    def onClickIDFT(self,path,fs):
+        amplitudes, phases = Ar.discrete_fourier_transform(path, int(fs))
+        l1= Ar.inverse_discrete_fourier_transform(amplitudes,phases)
+
+    def onClickModify(self,idx,amplitude,phase):
+        list_amplitude= list(map(int,amplitude.split()))
+        list_phase= list(map(int,phase.split()))
+        Ar.modify_component(int(idx),list_amplitude,list_phase)
     def run(self):
         self.root.mainloop()
 

@@ -194,10 +194,10 @@ def discrete_fourier_transform(input_file, fs):
 
 
 # Example usage:
-samples = [0, 1, 2, 3]
-amplitudes, phases = discrete_fourier_transform(samples)
-print("Amplitudes:", amplitudes)
-print("Phases (in degrees):", phases)
+# samples = [0, 1, 2, 3]
+# amplitudes, phases = discrete_fourier_transform(samples)
+# print("Amplitudes:", amplitudes)
+# print("Phases (in degrees):", phases)
 
 
 def inverse_discrete_fourier_transform(real, imaginary):
