@@ -36,6 +36,7 @@ class GUI:
         emptyPageButton = Button(self.root, text="Arithmatic", command=self.goToEmptyPage)
         quantizePage=Button(self.root, text="Quantize", command=self.goToQuantize)
         FrequencyDomain = Button(self.root, text="Frequency Domain", command=self.goTofrequencyDomain)
+        Dct=Button(self.root,text=" DCT & DC ",command=self.goToDctDomain)
 
         sinButton.pack()
         cosButton.pack()
@@ -43,6 +44,7 @@ class GUI:
         emptyPageButton.pack()
         quantizePage.pack()
         FrequencyDomain.pack()
+        Dct.pack()
 
 
     def onClick(self):
@@ -259,6 +261,38 @@ class GUI:
         listPhase=[] # hard coded list
 
         Ar.modify_component(int(idx),int(amplitude),int(phase),listAmpltiude,listPhase,path,int(fs))
+    def goToDctDomain(self):
+        new_window = Toplevel(self.root)
+        new_window.title("DCT")
+        path_label = Label(new_window, text="Enter File Path:")
+        path_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        path_entry = Entry(new_window, width=50)
+        path_entry.grid(row=0, column=1, padx=10, pady=10, columnspan=2)
+
+        browse_button = Button(new_window, text="Browse", command=lambda: self.browse_file(path_entry))
+        browse_button.grid(row=0, column=3, padx=10, pady=10, sticky="w")
+        ########
+        m_label = Label(new_window, text="Enter m coefficients")
+        m_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+        m_entry = Entry(new_window, width=10)
+        m_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+        button1 = Button(new_window, text="DCT", command=lambda: self.onClickDCT(path_entry.get(), m_entry.get()))
+        button1.grid(row=2, column=0, padx=10, pady=10, sticky="w")
+
+        path_label2 = Label(new_window, text="Enter File Path:")
+        path_label2.grid(row=4, column=0, padx=10, pady=10, sticky="w")
+        path_entry2 = Entry(new_window, width=50)
+        path_entry2.grid(row=4, column=1, padx=10, pady=10, columnspan=2)
+
+        browse_button2 = Button(new_window, text="Browse", command=lambda: self.browse_file(path_entry2))
+        browse_button2.grid(row=4, column=3, padx=10, pady=10, sticky="w")
+        button2 = Button(new_window, text="Remove DCT", command=lambda: self.onClickRemoveDCT(path_entry2.get()))
+        button2.grid(row=6, column=0, padx=10, pady=10, sticky="w")
+    def onClickDCT(self,path,m):
+        res=Ar.discrete_cosine_transform(path,int(m))
+
+    def onClickRemoveDCT(self,path):
+        x,y=Ar.remove_dc_component(path)
     def run(self):
         self.root.mainloop()
 

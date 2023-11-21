@@ -268,7 +268,7 @@ def modify_component(idx,amplitude,phase,amplitudes,phases, path,fs):
 
 
 
-def discrete_cosine_transform(path):
+def discrete_cosine_transform(path,m):
 
     x, y = readFile_returnArray(path)
     N = len(y)
