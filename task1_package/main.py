@@ -227,11 +227,19 @@ class GUI:
         phase_entry = Entry(new_window, width=10)
         phase_entry.grid(row=5, column=1, padx=10, pady=10, sticky="w")
 
+        path_label9 = Label(new_window, text="Enter File Path:")
+        path_label9.grid(row=6, column=0, padx=10, pady=10, sticky="w")
+        path_entry9 = Entry(new_window, width=50)
+        path_entry9.grid(row=7, column=1, padx=10, pady=10, columnspan=2)
+
+        browse_button9 = Button(new_window, text="Browse", command=lambda: self.browse_file(path_entry9))
+        browse_button9.grid(row=8, column=3, padx=10, pady=10, sticky="w")
+
         # Modify button
         action_button = Button(new_window, text="Modify",
                                command=lambda: self.onClickModify(index_entry.get(), amplitude_entry.get(),
-                                                                  phase_entry.get()))
-        action_button.grid(row=6, column=0, padx=10, pady=10, sticky="w")
+                                                                  phase_entry.get(),path_entry9.get() ,fs_entry.get()))
+        action_button.grid(row=10, column=0, padx=10, pady=10, sticky="w")
 
     to_be_modified_amplitudes = []
     to_be_modified_phases = []
@@ -246,11 +254,11 @@ class GUI:
     def onClickIDFT(self,path,fs):
         l1 = Ar.discrete_fourier_transform_reader(path, int(fs),1)
 
-    def onClickModify(self,idx,amplitude,phase):
+    def onClickModify(self,idx,amplitude,phase,path,fs):
         listAmpltiude=[] # hard coded list
         listPhase=[] # hard coded list
 
-        Ar.modify_component(int(idx),int(amplitude),int(phase),listAmpltiude,listPhase)
+        Ar.modify_component(int(idx),int(amplitude),int(phase),listAmpltiude,listPhase,path,int(fs))
     def run(self):
         self.root.mainloop()
 

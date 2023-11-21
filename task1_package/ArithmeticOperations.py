@@ -255,10 +255,12 @@ def inverse_discrete_fourier_transform(real, imaginary):
     return real2
 
 
-def modify_component(idx,amplitude,phase,amplitudes,phases):
-    draw_amplitude_phase(amplitudes,phases)
+def modify_component(idx,amplitude,phase,amplitudes,phases, path,fs):
+    amplitudes,phases = readFile_returnArray(path)
+    draw_amplitude_phase(amplitudes,phases,fs)
     amplitudes[idx] = amplitude
     phases[idx] = phase
-    draw_amplitude_phase(amplitudes,phases)
-
-
+    draw_amplitude_phase(amplitudes,phases,fs)
+    print("AFTER EDIT  AMP: ", amplitudes)
+    print("AFTER EDIT  PH: ", phases)
+    create_file(amplitudes, phases)
