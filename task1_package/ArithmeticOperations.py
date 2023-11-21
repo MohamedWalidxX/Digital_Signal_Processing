@@ -264,3 +264,45 @@ def modify_component(idx,amplitude,phase,amplitudes,phases, path,fs):
     print("AFTER EDIT  AMP: ", amplitudes)
     print("AFTER EDIT  PH: ", phases)
     create_file(amplitudes, phases)
+
+
+
+
+def discrete_cosine_transform(path):
+
+    x, y = readFile_returnArray(path)
+    N = len(y)
+    dct_result = np.zeros(N)
+
+    for k in range(N):
+        sum_val = 0.0
+        for n in range(N):
+            angle = (2 * k - 1) * (2*n-1) * (np.pi / (4 * N))
+            sum_val += data[n] * np.cos(angle)
+        dct_result[k] = sum_val * np.sqrt(2/N)
+
+    return dct_result
+
+
+
+def create_file_dct(chosen_values):
+    path = "inOut/task5/coff.txt"
+    with open(path, 'w') as file:
+        # Write the user-chosen numbers
+        file.write("{}\n".format(0))  # Replace with your first number
+        file.write("{}\n".format(1))  # Replace with your second number
+
+        # Write the size of the amplitudes or phases list
+        file.write("{}\n".format(len(chosen_values)))
+
+        # Write the amplitudes and phases
+        for x in zip(chosen_values):
+            file.write("{}\n".format(x))
+
+
+def remove_dc_component(path):
+    x, y = readFile_returnArray(path)
+    dc_component = np.mean(x)
+    y_new = y - dc_component
+    create_file(x,y_new)
+    return x,y_new
