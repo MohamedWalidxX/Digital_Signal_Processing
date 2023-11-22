@@ -278,9 +278,12 @@ def discrete_cosine_transform(path,m):
         sum_val = 0.0
         for n in range(N):
             angle = (2 * k - 1) * (2*n-1) * (np.pi / (4 * N))
-            sum_val += data[n] * np.cos(angle)
+            sum_val += y[n] * np.cos(angle)
         dct_result[k] = sum_val * np.sqrt(2/N)
-
+        dct_result[k] = round(dct_result[k], 5)
+    indices = list(range(len(dct_result)))
+    draw_signal2(indices,dct_result)
+    create_file_dct(dct_result[:m])
     return dct_result
 
 
@@ -297,7 +300,7 @@ def create_file_dct(chosen_values):
 
         # Write the amplitudes and phases
         for x in zip(chosen_values):
-            file.write("{}\n".format(x))
+            file.write("{} {}\n".format(0, x[0]))
 
 
 def remove_dc_component(path):

@@ -161,4 +161,3 @@ def draw_signal2(x_values,y_values):
         print("Invalid choice. Enter 'd' for discrete plot or 'c' for continuous plot.")
 
 
-
