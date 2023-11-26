@@ -7,6 +7,8 @@ from tkinter import messagebox
 from draw import draw_signal2
 from tkinter import *
 
+def separate_tuples(list_of_tuples):
+    return zip(*list_of_tuples)
 
 def equalize_arrays(arr1, arr2):
     condition = 0  # which is the smallest variable
@@ -17,6 +19,7 @@ def equalize_arrays(arr1, arr2):
         arr2.extend([0] * (len(arr1) - len(arr2)))
         condition = 2
     return arr1, arr2, condition
+
 
 def readFile_returnComplexComponents(path):
     x_values = []
@@ -29,6 +32,15 @@ def readFile_returnComplexComponents(path):
             x_values.append(x * np.cos(y))
             y_values.append(x * np.sin(y))
     return x_values, y_values
+
+def readFile_returnTuples(path):
+    list_of_tuples = []
+    with open(path, "r") as file:
+        lines = file.readlines()[3:]  # Skip the first three lines
+        for line in lines:
+            x, y = map(float, line.strip().split())
+            list_of_tuples.append((x, y))
+    return list_of_tuples
 
 def readFile_returnArray(path):
     x_values = []
@@ -94,7 +106,9 @@ def square_signal(path):
 def shift_signal(path, shiftAmount):
     x1, y1 = readFile_returnArray(path)
     x1 = np.array(x1) - shiftAmount
+    create_file(x1,y1, "shifted.txt")
     draw_signal2(x1, y1)
+    return x1, y1
 
 
 def normalize(path, a, b):
@@ -179,14 +193,30 @@ def quantize_signal(file_path, levels, isConverted):
     draw_signal2(x, quantized_y)
     return error_sum / len(y), encoded_group_of_samples, quantized_y
 
+
 def draw_amplitude_phase(amplitudes, phases, fs):
     n = len(amplitudes)
-    X = 2 * np.pi / 1/fs * n
+    X = 2 * np.pi / 1 / fs * n
     multiples_of_X = [X * i for i in range(1, n + 1)]
     draw_signal2(multiples_of_X, amplitudes)
     draw_signal2(multiples_of_X, phases)
 
-def create_file(amplitudes,phases):
+def create_file(x, y, file_name):
+    path = "inOut/task6/"
+    path += file_name
+    with open(path, 'w') as file:
+        # Write the user-chosen numbers
+        file.write("{}\n".format(0))  # Replace with your first number
+        file.write("{}\n".format(1))  # Replace with your second number
+
+        # Write the size of the amplitudes or phases list
+        file.write("{}\n".format(len(x)))
+
+        # Write the amplitudes and phases
+        for a, b in zip(x, y):
+            file.write("{} {}\n".format(a, b))
+
+def create_file_polar_form(amplitudes, phases):
     path = "inOut/task4/polarForm.txt"
     with open(path, 'w') as file:
         # Write the user-chosen numbers
@@ -200,15 +230,17 @@ def create_file(amplitudes,phases):
         for amp, ph in zip(amplitudes, phases):
             file.write("{} {}\n".format(amp, ph))
 
-def discrete_fourier_transform_reader(path,fs,isInverse):
+
+def discrete_fourier_transform_reader(path, fs, isInverse):
     if isInverse == 0:
         x, y = readFile_returnArray(path)
-        return discrete_fourier_transform(y,fs)
+        return discrete_fourier_transform(y, fs)
     else:
         real_list, imaginary_list = readFile_returnComplexComponents(path)
-        return inverse_discrete_fourier_transform(real_list,imaginary_list)
+        return inverse_discrete_fourier_transform(real_list, imaginary_list)
 
-def discrete_fourier_transform(samples,fs):
+
+def discrete_fourier_transform(samples, fs):
     N = len(samples)
     amplitudes = []
     phases = []
@@ -227,14 +259,15 @@ def discrete_fourier_transform(samples,fs):
         real_list.append(real_part)
         imaginary_list.append(imag_part)
         amplitude = np.sqrt(real_part ** 2 + imag_part ** 2)
-        phase_rad = np.arctan2(imag_part,real_part)
+        phase_rad = np.arctan2(imag_part, real_part)
         phase_degree = np.degrees(phase_rad)
 
         amplitudes.append(amplitude)
         phases.append(phase_rad)
-    draw_amplitude_phase(amplitudes,phases,fs)
-    create_file(amplitudes,phases)
-    return amplitudes,phases, real_list, imaginary_list
+    draw_amplitude_phase(amplitudes, phases, fs)
+    create_file_polar_form(amplitudes, phases)
+    return amplitudes, phases, real_list, imaginary_list
+
 
 def inverse_discrete_fourier_transform(real, imaginary):
     real2 = []
@@ -250,26 +283,23 @@ def inverse_discrete_fourier_transform(real, imaginary):
             imaginary_part = round(imaginary_part, 9)
 
             sum += real_part * real[k] - imaginary_part * imaginary[k]
-        real2.append(round(sum/N, 7))
+        real2.append(round(sum / N, 7))
     print(real2)
     return real2
 
 
-def modify_component(idx,amplitude,phase,amplitudes,phases, path,fs):
-    amplitudes,phases = readFile_returnArray(path)
-    draw_amplitude_phase(amplitudes,phases,fs)
+def modify_component(idx, amplitude, phase, amplitudes, phases, path, fs):
+    amplitudes, phases = readFile_returnArray(path)
+    draw_amplitude_phase(amplitudes, phases, fs)
     amplitudes[idx] = amplitude
     phases[idx] = phase
-    draw_amplitude_phase(amplitudes,phases,fs)
+    draw_amplitude_phase(amplitudes, phases, fs)
     print("AFTER EDIT  AMP: ", amplitudes)
     print("AFTER EDIT  PH: ", phases)
-    create_file(amplitudes, phases)
+    create_file_polar_form(amplitudes, phases)
 
 
-
-
-def discrete_cosine_transform(path,m):
-
+def discrete_cosine_transform(path, m):
     x, y = readFile_returnArray(path)
     N = len(y)
     dct_result = np.zeros(N)
@@ -277,15 +307,14 @@ def discrete_cosine_transform(path,m):
     for k in range(N):
         sum_val = 0.0
         for n in range(N):
-            angle = (2 * k - 1) * (2*n-1) * (np.pi / (4 * N))
+            angle = (2 * k - 1) * (2 * n - 1) * (np.pi / (4 * N))
             sum_val += y[n] * np.cos(angle)
-        dct_result[k] = sum_val * np.sqrt(2/N)
+        dct_result[k] = sum_val * np.sqrt(2 / N)
         dct_result[k] = round(dct_result[k], 5)
     indices = list(range(len(dct_result)))
-    draw_signal2(indices,dct_result)
+    draw_signal2(indices, dct_result)
     create_file_dct(dct_result[:m])
     return dct_result
-
 
 
 def create_file_dct(chosen_values):
@@ -307,5 +336,54 @@ def remove_dc_component(path):
     x, y = readFile_returnArray(path)
     dc_component = np.mean(x)
     y_new = y - dc_component
-    create_file(x,y_new)
-    return x,y_new
+    create_file_polar_form(x, y_new)
+    return x, y_new
+
+
+def smooth_signal(y, window_size):
+    #x, y = readFile_returnArray(path)
+    smoothed_signal = []
+    for start in range(len(y)):
+        end = start + window_size - 1
+        if end >= len(y):
+            break
+        tmp_window = y[start:end + 1]
+        avg = sum(tmp_window) / len(tmp_window)
+        smoothed_signal.append(avg)
+    return smoothed_signal
+
+
+def convert_polar_to_complex(amplitudes, phases, dc_remove):
+    real_list = []
+    imaginary_list = []
+    if dc_remove:
+        amplitudes[0] = 0
+        phases[0] = 0
+    for a,p in zip(amplitudes,phases):
+        real_num = a * np.cos(p)
+        imaginary_num = a * np.sin(p)
+        real_list.append(real_num)
+        imaginary_list.append(imaginary_num)
+    return real_list, imaginary_list
+
+def remove_dc_component_frequency_domain(path, fs):
+    x,y = readFile_returnArray(path)
+    polar_form_path = "inOut/task4/polarForm.txt"
+    amplitudes, phases, real_list, imaginary_list = discrete_fourier_transform(y, fs)
+    r, i = convert_polar_to_complex(amplitudes,phases, True)
+    out = inverse_discrete_fourier_transform(r,i)
+    return out
+
+
+def fold_signal(path):
+    coordinates = readFile_returnTuples(path)
+    for i in range(len(coordinates)):
+        coordinates[i] = (-coordinates[i][0], coordinates[i][1])
+    coordinates.sort()
+    x, y = separate_tuples(coordinates)
+    create_file(x, y, "folded.txt")
+    return x, y
+
+coordinates = [(-2,1),(-1,1),(0,3),(1,2),(2,4)]
+x, y = fold_signal("inOut/task6/Shifting and Folding/input_fold.txt")
+x_shift,y_shift = shift_signal("inOut/task6/folded.txt", -500)
