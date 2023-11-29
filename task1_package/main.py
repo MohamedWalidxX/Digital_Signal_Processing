@@ -7,6 +7,7 @@ from tkinter import messagebox
 
 from tkinter import *
 import ArithmeticOperations as Ar
+import DerivativeSignal as Dr
 import cosine_wave as cs
 import sino_waves as si
 from tkinter import Toplevel, filedialog
@@ -37,7 +38,7 @@ class GUI:
         quantizePage=Button(self.root, text="Quantize", command=self.goToQuantize)
         FrequencyDomain = Button(self.root, text="Frequency Domain", command=self.goTofrequencyDomain)
         Dct=Button(self.root,text=" DCT & DC ",command=self.goToDctDomain)
-
+        TimeDomain=Button(self.root,text="TimeDomain",command=self.goToTimeDomain)
         sinButton.pack()
         cosButton.pack()
         myButton.pack()
@@ -45,6 +46,7 @@ class GUI:
         quantizePage.pack()
         FrequencyDomain.pack()
         Dct.pack()
+        TimeDomain.pack()
 
 
     def onClick(self):
@@ -293,6 +295,68 @@ class GUI:
 
     def onClickRemoveDCT(self,path):
         x,y=Ar.remove_dc_component(path)
+
+    def goToTimeDomain(self):
+        new_window = Toplevel(self.root)
+        new_window.title("Time Domain")
+        path_label = Label(new_window, text="Enter File Path:")
+        path_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        path_entry = Entry(new_window, width=50)
+        path_entry.grid(row=0, column=1, padx=10, pady=10, columnspan=2)
+        browse_button = Button(new_window, text="Browse", command=lambda: self.browse_file(path_entry))
+        browse_button.grid(row=0, column=3, padx=10, pady=10, sticky="w")
+
+        ## Smothing UI && Button
+        window_size_label = Label(new_window, text="Window Size")
+        window_size_label.grid(row=2, column=0, padx=10, pady=10, sticky="w")
+        window_size_entry = Entry(new_window, width=10)
+        window_size_entry.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+        button_smothing = Button(new_window, text="Smothing", command=lambda: self.onClickSmoth(path_entry.get(),window_size_entry.get()))
+        button_smothing.grid(row=3, column=0, padx=10, pady=10, sticky="w")
+
+        ## Sharpning UI && Button
+        button_sharpning = Button(new_window, text="Sharpning",command=lambda: self.onClickSharp())
+        button_sharpning.grid(row=4, column=0, padx=10, pady=10, sticky="w")
+
+        #Delay
+        shift_label = Label(new_window, text="Delay")
+        shift_label.grid(row=5, column=0, padx=10, pady=10, sticky="w")
+        shift_label_entry = Entry(new_window, width=10)
+        shift_label_entry.grid(row=5, column=1, padx=10, pady=10, sticky="w")
+        button_Delay = Button(new_window, text="Delay",
+                                 command=lambda: self.onClickShiftSignal(path_entry.get(), shift_label_entry.get()))
+        button_Delay.grid(row=6, column=0, padx=10, pady=10, sticky="w")
+
+        ## Folding
+        button_Folding = Button(new_window, text="Folding",
+                              command=lambda: self.onClickFolding(path_entry.get()))
+        button_Folding.grid(row=7, column=0, padx=10, pady=10, sticky="w")
+        # DC component Frquency domain
+        fs_label = Label(new_window, text="Fs")
+        fs_label.grid(row=8, column=0, padx=10, pady=10, sticky="w")
+        fs_label_entry = Entry(new_window, width=10)
+        fs_label_entry.grid(row=8, column=1, padx=10, pady=10, sticky="w")
+        button_fs = Button(new_window, text=" Remove DC frequency domain",
+                              command=lambda: self.onClickDc_component(path_entry.get(), fs_label_entry.get()))
+        button_fs.grid(row=9, column=0, padx=10, pady=10, sticky="w")
+
+
+    def onClickFolding(self,path):
+        X,Y=Ar.fold_signal(path)
+        print("Fold -> ",X)
+        print("Fold -> ",Y)
+    def onClickSmoth(self,path,window_size):
+        smothed_signal=Ar.smooth_signal(path,int(window_size))
+        print("Smothed Singal -->",smothed_signal)
+
+    def onClickSharp(self):
+        Dr.DerivativeSignal()
+    def onClickDc_component(self,path,fs):
+        out =Ar.remove_dc_component_frequency_domain(path,int(fs))
+
+
+
+
     def run(self):
         self.root.mainloop()
 

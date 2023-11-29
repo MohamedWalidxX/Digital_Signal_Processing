@@ -383,7 +383,7 @@ def fold_signal(path):
     x, y = separate_tuples(coordinates)
     create_file(x, y, "folded.txt")
     return x, y
-
-coordinates = [(-2,1),(-1,1),(0,3),(1,2),(2,4)]
-x, y = fold_signal("inOut/task6/Shifting and Folding/input_fold.txt")
-x_shift,y_shift = shift_signal("inOut/task6/folded.txt", -500)
+#
+# coordinates = [(-2,1),(-1,1),(0,3),(1,2),(2,4)]
+# x, y = fold_signal("inOut/task6/Shifting and Folding/input_fold.txt")
+# x_shift,y_shift = shift_signal("inOut/task6/folded.txt", -500)
