@@ -284,7 +284,6 @@ def inverse_discrete_fourier_transform(real, imaginary):
 
             sum += real_part * real[k] - imaginary_part * imaginary[k]
         real2.append(round(sum / N, 7))
-    print(real2)
     return real2
 
 
@@ -368,10 +367,13 @@ def convert_polar_to_complex(amplitudes, phases, dc_remove):
 
 def remove_dc_component_frequency_domain(path, fs):
     x,y = readFile_returnArray(path)
-    polar_form_path = "inOut/task4/polarForm.txt"
     amplitudes, phases, real_list, imaginary_list = discrete_fourier_transform(y, fs)
     r, i = convert_polar_to_complex(amplitudes,phases, True)
     out = inverse_discrete_fourier_transform(r,i)
+    out = np.round(out,3)
+    print("OUT: ", out)
+    indices = list(range(len(out)))
+    draw_signal2(indices, out)
     return out
 
 

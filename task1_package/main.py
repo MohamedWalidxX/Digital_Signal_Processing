@@ -11,7 +11,7 @@ import DerivativeSignal as Dr
 import cosine_wave as cs
 import sino_waves as si
 from tkinter import Toplevel, filedialog
-
+from comparesignals import SignalSamplesAreEqual
 
 
         # Continuous signal plot
@@ -140,7 +140,14 @@ class GUI:
         Ar.square_signal(str(path))
 
     def onClickShiftSignal(self,path,shiftAmount):
-        Ar.shift_signal(path,int(shiftAmount))
+        x, y = Ar.shift_signal(path,int(shiftAmount))
+        if (int(shiftAmount) < 0):
+            SignalSamplesAreEqual("inOut/task6/Shifting and Folding/Output_ShifFoldedby500.txt",[],y)
+        else :
+            SignalSamplesAreEqual("inOut/task6/Shifting and Folding/Output_ShiftFoldedby-500.txt",[],y)
+
+
+
 
     def onClickNormalize(self,path,a , b):
         Ar.normalize(path,int(a),int(b))
@@ -353,6 +360,8 @@ class GUI:
         Dr.DerivativeSignal()
     def onClickDc_component(self,path,fs):
         out =Ar.remove_dc_component_frequency_domain(path,int(fs))
+        SignalSamplesAreEqual("inOut/task5/DC_component_output.txt",[],out)
+
 
 
 
