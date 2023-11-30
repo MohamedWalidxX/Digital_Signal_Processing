@@ -52,4 +52,4 @@ def DerivativeSignal():
     return
 
 
-DerivativeSignal()
+# DerivativeSignal()

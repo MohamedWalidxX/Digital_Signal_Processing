@@ -10,8 +10,9 @@ import ArithmeticOperations as Ar
 import DerivativeSignal as Dr
 import cosine_wave as cs
 import sino_waves as si
-from tkinter import Toplevel, filedialog
 from comparesignals import SignalSamplesAreEqual
+from tkinter import Toplevel, filedialog
+from comparesignals import SignalSamplesAreEqual, SignalSamplesAreEqual2
 
 
         # Continuous signal plot
@@ -352,9 +353,17 @@ class GUI:
         X,Y=Ar.fold_signal(path)
         print("Fold -> ",X)
         print("Fold -> ",Y)
+        SignalSamplesAreEqual2("inOut/task6/Shifting and Folding/Output_fold.txt",[],X)
+
     def onClickSmoth(self,path,window_size):
         smothed_signal=Ar.smooth_signal(path,int(window_size))
         print("Smothed Singal -->",smothed_signal)
+        print("LEN: ", len(smothed_signal))
+        if int(window_size) == 3:
+            SignalSamplesAreEqual("inOut/task6/Moving Average/OutMovAvgTest1.txt",[],smothed_signal)
+        else:
+            SignalSamplesAreEqual("inOut/task6/Moving Average/OutMovAvgTest2.txt",[], smothed_signal)
+
 
     def onClickSharp(self):
         Dr.DerivativeSignal()

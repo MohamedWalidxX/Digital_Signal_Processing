@@ -339,14 +339,15 @@ def remove_dc_component(path):
     return x, y_new
 
 
-def smooth_signal(y, window_size):
-    #x, y = readFile_returnArray(path)
+def smooth_signal(path, window_size):
+    x, y = readFile_returnArray(path)
     smoothed_signal = []
     for start in range(len(y)):
         end = start + window_size - 1
         if end >= len(y):
             break
-        tmp_window = y[start:end + 1]
+        tmp_window =y[start:end + 1]
+       # print(type(tmp_window)," ",type(window_size))
         avg = sum(tmp_window) / len(tmp_window)
         smoothed_signal.append(avg)
     return smoothed_signal
@@ -384,6 +385,7 @@ def fold_signal(path):
     coordinates.sort()
     x, y = separate_tuples(coordinates)
     create_file(x, y, "folded.txt")
+    draw_signal2(x,y)
     return x, y
 #
 # coordinates = [(-2,1),(-1,1),(0,3),(1,2),(2,4)]
