@@ -6,7 +6,7 @@ import cosine_wave as cs
 from tkinter import messagebox
 from draw import draw_signal2
 from tkinter import *
-
+from inOut.task7.ConvTest import ConvTest
 def separate_tuples(list_of_tuples):
     return zip(*list_of_tuples)
 
@@ -20,6 +20,16 @@ def equalize_arrays(arr1, arr2):
         condition = 2
     return arr1, arr2, condition
 
+
+
+def readFile_returnDict(path):
+    signal_dict = {}
+    with open(path, "r") as file:
+        lines = file.readlines()[3:]  # Skip the first three lines
+        for line in lines:
+            x, y = map(float, line.strip().split())
+            signal_dict[x] = y
+    return signal_dict
 
 def readFile_returnComplexComponents(path):
     x_values = []
@@ -387,7 +397,31 @@ def fold_signal(path):
     create_file(x, y, "folded.txt")
     draw_signal2(x,y)
     return x, y
-#
-# coordinates = [(-2,1),(-1,1),(0,3),(1,2),(2,4)]
-# x, y = fold_signal("inOut/task6/Shifting and Folding/input_fold.txt")
-# x_shift,y_shift = shift_signal("inOut/task6/folded.txt", -500)
+
+
+def convolve(signal_path, kernel_path):
+    convolved_dict = {}
+    signal_dict = readFile_returnDict(signal_path)
+    kernal_dict = readFile_returnDict(kernel_path)
+    signal_len = len(signal_dict)
+    kernel_len = len(kernal_dict)
+    result_len = signal_len + kernel_len
+    signal_min_idx = int(min(signal_dict.keys()))
+    signal_max_idx = int(max(signal_dict.keys()))
+    kernal_min_idx = int(min(kernal_dict.keys()))
+    kernal_max_idx = int(max(kernal_dict.keys()))
+    mini_n = int(signal_min_idx + kernal_min_idx)
+    maxi_n = int(kernal_max_idx + signal_max_idx)
+
+    for i in range(mini_n, maxi_n + 1):
+        sum = 0
+        not_first_time = False
+        for j in range(signal_min_idx, signal_max_idx + 1):
+            if i - j < kernal_min_idx or i - j > kernal_max_idx:
+                continue
+            sum += signal_dict[j] * kernal_dict[i - j]
+        convolved_dict[i] = sum
+    indices_list = list(convolved_dict.keys())
+    values_list = list(convolved_dict.values())
+
+    return indices_list, values_list

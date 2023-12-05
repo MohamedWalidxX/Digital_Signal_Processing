@@ -13,7 +13,7 @@ import sino_waves as si
 from comparesignals import SignalSamplesAreEqual
 from tkinter import Toplevel, filedialog
 from comparesignals import SignalSamplesAreEqual, SignalSamplesAreEqual2
-
+from inOut.task7 import ConvTest
 
         # Continuous signal plot
 
