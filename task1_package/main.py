@@ -13,7 +13,7 @@ import sino_waves as si
 from comparesignals import SignalSamplesAreEqual
 from tkinter import Toplevel, filedialog
 from comparesignals import SignalSamplesAreEqual, SignalSamplesAreEqual2
-from inOut.task7 import ConvTest
+from inOut.task7.ConvTest import ConvTest
 
         # Continuous signal plot
 
@@ -40,6 +40,7 @@ class GUI:
         FrequencyDomain = Button(self.root, text="Frequency Domain", command=self.goTofrequencyDomain)
         Dct=Button(self.root,text=" DCT & DC ",command=self.goToDctDomain)
         TimeDomain=Button(self.root,text="TimeDomain",command=self.goToTimeDomain)
+        Convlove=Button(self.root,text="Convolve",command=self.goToConvolove)
         sinButton.pack()
         cosButton.pack()
         myButton.pack()
@@ -48,6 +49,7 @@ class GUI:
         FrequencyDomain.pack()
         Dct.pack()
         TimeDomain.pack()
+        Convlove.pack()
 
 
     def onClick(self):
@@ -370,6 +372,37 @@ class GUI:
     def onClickDc_component(self,path,fs):
         out =Ar.remove_dc_component_frequency_domain(path,int(fs))
         SignalSamplesAreEqual("inOut/task5/DC_component_output.txt",[],out)
+
+    def goToConvolove(self):
+        new_window = Toplevel(self.root)
+        new_window.title("Convolve")
+        path_label = Label(new_window, text="Enter File Path:")
+        path_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        path_entry = Entry(new_window, width=50)
+        path_entry.grid(row=0, column=1, padx=10, pady=10, columnspan=2)
+        browse_button = Button(new_window, text="Browse", command=lambda: self.browse_file(path_entry))
+        browse_button.grid(row=0, column=3, padx=10, pady=10, sticky="w")
+
+        path_labe2 = Label(new_window, text="Enter File Path:")
+        path_labe2.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+        path_entry2 = Entry(new_window, width=50)
+        path_entry2.grid(row=1, column=1, padx=10, pady=10, columnspan=2)
+        browse_button2 = Button(new_window, text="Browse", command=lambda: self.browse_file(path_entry))
+        browse_button2.grid(row=2, column=3, padx=10, pady=10, sticky="w")
+
+        def onClickConvolve(path1,path2):
+            indices_list, values_list=Ar.convolve(path1,path2)
+            ConvTest(indices_list,values_list)
+
+        ConvolveButton = Button(new_window, text="Convolve", command=lambda:onClickConvolve(path_entry,path_entry2))
+        ConvolveButton.grid(row=3, column=2, padx=10, pady=10, sticky="w")
+
+
+    
+        
+
+
+
 
 
 
