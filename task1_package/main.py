@@ -387,7 +387,7 @@ class GUI:
         path_labe2.grid(row=1, column=0, padx=10, pady=10, sticky="w")
         path_entry2 = Entry(new_window, width=50)
         path_entry2.grid(row=1, column=1, padx=10, pady=10, columnspan=2)
-        browse_button2 = Button(new_window, text="Browse", command=lambda: self.browse_file(path_entry))
+        browse_button2 = Button(new_window, text="Browse", command=lambda: self.browse_file(path_entry2))
         browse_button2.grid(row=2, column=3, padx=10, pady=10, sticky="w")
 
         def onClickConvolve(path1,path2):
