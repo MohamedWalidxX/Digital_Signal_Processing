@@ -373,6 +373,10 @@ class GUI:
         out =Ar.remove_dc_component_frequency_domain(path,int(fs))
         SignalSamplesAreEqual("inOut/task5/DC_component_output.txt",[],out)
 
+    def onClickConvolve(self, path1,path2):
+        indices_list, values_list = Ar.convolve(path1, path2)
+        ConvTest(indices_list, values_list)
+
     def goToConvolove(self):
         new_window = Toplevel(self.root)
         new_window.title("Convolve")
@@ -390,11 +394,7 @@ class GUI:
         browse_button2 = Button(new_window, text="Browse", command=lambda: self.browse_file(path_entry2))
         browse_button2.grid(row=2, column=3, padx=10, pady=10, sticky="w")
 
-        def onClickConvolve(path1,path2):
-            indices_list, values_list=Ar.convolve(path1,path2)
-            ConvTest(indices_list,values_list)
-
-        ConvolveButton = Button(new_window, text="Convolve", command=lambda:onClickConvolve(path_entry,path_entry2))
+        ConvolveButton = Button(new_window, text="Convolve", command=lambda:self.onClickConvolve(path_entry.get(),path_entry2.get()))
         ConvolveButton.grid(row=3, column=2, padx=10, pady=10, sticky="w")
 
 
