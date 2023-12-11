@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
 import sino_waves as si
@@ -7,6 +8,7 @@ from tkinter import messagebox
 from draw import draw_signal2
 from tkinter import *
 from inOut.task7.ConvTest import ConvTest
+from inOut.task8.CompareSignal import Compare_Signals
 def separate_tuples(list_of_tuples):
     return zip(*list_of_tuples)
 
@@ -425,3 +427,27 @@ def convolve(signal_path, kernel_path):
     values_list = list(convolved_dict.values())
 
     return indices_list, values_list
+
+
+def cross_direct_correlation(signa1_path, signal2_path):
+    x1, y1 = readFile_returnArray(signa1_path)
+    x2, y2 = readFile_returnArray(signal2_path)
+    N = len(y1)
+    M = len(y2)
+    cross_correlation = []
+    squared_signal1_sum = sum(x ** 2 for x in y1)
+    squared_signa2_sum = sum(x ** 2 for x in y2)
+    NORMALIZATION_CONST = math.sqrt(squared_signal1_sum * squared_signa2_sum) / N
+    for tau in range(N):
+        res = 0
+        for k in range(M):
+            res += y1[k] * y2[(k + tau) % M]
+        cross_correlation.append(res / N / NORMALIZATION_CONST)
+
+    return cross_correlation
+
+
+
+result = cross_direct_correlation("inOut/task8/Corr_input signal1.txt", "inOut/task8/Corr_input signal2.txt")
+print("Cross-correlation result:", result)
+Compare_Signals("inOut/task8/CorrOutput.txt",[], result)
