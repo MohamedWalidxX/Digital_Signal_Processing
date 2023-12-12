@@ -448,6 +448,6 @@ def cross_direct_correlation(signa1_path, signal2_path):
 
 
 
-result = cross_direct_correlation("inOut/task8/Corr_input signal1.txt", "inOut/task8/Corr_input signal2.txt")
-print("Cross-correlation result:", result)
-Compare_Signals("inOut/task8/CorrOutput.txt",[], result)
+# result = cross_direct_correlation("inOut/task8/Corr_input signal1.txt", "inOut/task8/Corr_input signal2.txt")
+# print("Cross-correlation result:", result)
+#Compare_Signals("inOut/task8/CorrOutput.txt",[], result)

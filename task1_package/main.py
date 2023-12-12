@@ -14,6 +14,7 @@ from comparesignals import SignalSamplesAreEqual
 from tkinter import Toplevel, filedialog
 from comparesignals import SignalSamplesAreEqual, SignalSamplesAreEqual2
 from inOut.task7.ConvTest import ConvTest
+from comparesignals import Compare_Signals
 
         # Continuous signal plot
 
@@ -41,6 +42,8 @@ class GUI:
         Dct=Button(self.root,text=" DCT & DC ",command=self.goToDctDomain)
         TimeDomain=Button(self.root,text="TimeDomain",command=self.goToTimeDomain)
         Convlove=Button(self.root,text="Convolve",command=self.goToConvolove)
+        Correlatoion= Button(self.root, text="Correlatoion", command=self.goToCorrelation)
+
         sinButton.pack()
         cosButton.pack()
         myButton.pack()
@@ -50,6 +53,7 @@ class GUI:
         Dct.pack()
         TimeDomain.pack()
         Convlove.pack()
+        Correlatoion.pack()
 
 
     def onClick(self):
@@ -397,10 +401,29 @@ class GUI:
         ConvolveButton = Button(new_window, text="Convolve", command=lambda:self.onClickConvolve(path_entry.get(),path_entry2.get()))
         ConvolveButton.grid(row=3, column=2, padx=10, pady=10, sticky="w")
 
+    def onClickCorrelation(self, path1, path2):
+        res = Ar.cross_direct_correlation(path1, path2)
+        Compare_Signals("inOut/task8/CorrOutput.txt", [],res)
 
-    
-        
+    def goToCorrelation(self):
+        new_window = Toplevel(self.root)
+        new_window.title("Convolve")
+        path_label = Label(new_window, text="Enter File Path:")
+        path_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        path_entry = Entry(new_window, width=50)
+        path_entry.grid(row=0, column=1, padx=10, pady=10, columnspan=2)
+        browse_button = Button(new_window, text="Browse", command=lambda: self.browse_file(path_entry))
+        browse_button.grid(row=0, column=3, padx=10, pady=10, sticky="w")
 
+        path_labe2 = Label(new_window, text="Enter File Path:")
+        path_labe2.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+        path_entry2 = Entry(new_window, width=50)
+        path_entry2.grid(row=1, column=1, padx=10, pady=10, columnspan=2)
+        browse_button2 = Button(new_window, text="Browse", command=lambda: self.browse_file(path_entry2))
+        browse_button2.grid(row=2, column=3, padx=10, pady=10, sticky="w")
+
+        CorrelationButton = Button(new_window, text="Correlation", command=lambda:self.onClickCorrelation(path_entry.get(),path_entry2.get()))
+        CorrelationButton.grid(row=3, column=2, padx=10, pady=10, sticky="w")
 
 
 
