@@ -381,6 +381,11 @@ class GUI:
         indices_list, values_list = Ar.convolve(path1, path2)
         ConvTest(indices_list, values_list)
 
+    def onClickFastConvolve(self,path1,path2):
+        indices_list, values_list = Ar.fast_convolution(path1, path2)
+
+
+
     def goToConvolove(self):
         new_window = Toplevel(self.root)
         new_window.title("Convolve")
@@ -400,10 +405,19 @@ class GUI:
 
         ConvolveButton = Button(new_window, text="Convolve", command=lambda:self.onClickConvolve(path_entry.get(),path_entry2.get()))
         ConvolveButton.grid(row=3, column=2, padx=10, pady=10, sticky="w")
+        fastConvolveButton = Button(new_window, text="Fast Convolve",
+                                command=lambda: self.onClickFastConvolve(path_entry.get(), path_entry2.get()))
+        fastConvolveButton.grid(row=4, column=2, padx=10, pady=10, sticky="w")
 
     def onClickCorrelation(self, path1, path2):
         res = Ar.cross_direct_correlation(path1, path2)
         Compare_Signals("inOut/task8/CorrOutput.txt", [],res)
+
+    def onClickFastCorrelation(self,path1,path2):
+
+        res = Ar.fast_correlation(path1, path2)
+
+
 
     def goToCorrelation(self):
         new_window = Toplevel(self.root)
@@ -424,6 +438,9 @@ class GUI:
 
         CorrelationButton = Button(new_window, text="Correlation", command=lambda:self.onClickCorrelation(path_entry.get(),path_entry2.get()))
         CorrelationButton.grid(row=3, column=2, padx=10, pady=10, sticky="w")
+        fastCorrelationButton = Button(new_window, text="fast Correlation", command=lambda:self.onClickFastCorrelation(path_entry.get(),path_entry2.get()))
+        fastCorrelationButton.grid(row=4, column=2, padx=10, pady=10, sticky="w")
+
 
 
 

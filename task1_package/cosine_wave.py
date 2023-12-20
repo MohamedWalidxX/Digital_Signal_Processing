@@ -21,6 +21,7 @@ def generate_cosine_signal(A, theta, f, fs, duration):
 
     # Generate time values
     t = np.linspace(0, duration, num_samples, endpoint=False)
+    print(t)
 
     # Generate the sinusoidal signal
     signal = A * np.cos(2 * np.pi * f * t + theta)
