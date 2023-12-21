@@ -7,8 +7,10 @@ import cosine_wave as cs
 from tkinter import messagebox
 from draw import draw_signal2
 from tkinter import *
-from inOut.task7.ConvTest import ConvTest
+#from inOut.task7.ConvTest import ConvTest
 from inOut.task8.CompareSignal import Compare_Signals
+from inOut.Convolution.ConvTest import ConvTest
+
 def separate_tuples(list_of_tuples):
     return zip(*list_of_tuples)
 
@@ -446,72 +448,30 @@ def cross_direct_correlation(signa1_path, signal2_path):
 
     return cross_correlation
 
+def multiply_lists(list1, list2):
+    return [elem1 * elem2 for elem1, elem2 in zip(list1, list2)]
+def add_lists(list1, list2):
+    return [elem1 + elem2 for elem1, elem2 in zip(list1, list2)]
 
-
-# result = cross_direct_correlation("inOut/task8/Corr_input signal1.txt", "inOut/task8/Corr_input signal2.txt")
-# print("Cross-correlation result:", result)
-#Compare_Signals("inOut/task8/CorrOutput.txt",[], result)
-
-def Compare_Signals_correlation(file_name,Your_indices,Your_samples):
-    expected_indices=[]
-    expected_samples=[]
-    with open(file_name, 'r') as f:
-        line = f.readline()
-        line = f.readline()
-        line = f.readline()
-        line = f.readline()
-        while line:
-            # process line
-            L=line.strip()
-            if len(L.split(' '))==2:
-                L=line.split(' ')
-                V1=int(L[0])
-                V2=float(L[1])
-                expected_indices.append(V1)
-                expected_samples.append(V2)
-                line = f.readline()
-            else:
-                break
-    print("Current Output Test file is: ")
-    print(file_name)
-    print("\n")
-    if (len(expected_samples)!=len(Your_samples)) and (len(expected_indices)!=len(Your_indices)):
-        print("Shift_Fold_Signal Test case failed, your signal have different length from the expected one")
-        return
-    for i in range(len(Your_indices)):
-        if(Your_indices[i]!=expected_indices[i]):
-            print("Shift_Fold_Signal Test case failed, your signal have different indicies from the expected one")
-            return
-    for i in range(len(expected_samples)):
-        if abs(Your_samples[i] - expected_samples[i]) < 0.01:
-            continue
-        else:
-            print("Correlation Test case failed, your signal have different values from the expected one")
-            return
-    print("Correlation Test case passed successfully")
-
-def fast_convolution(path1,path2):
-    pass
-
-
-def fast_correlation(path1,path2):
-    x1, y1 = readFile_returnArray(path1)
-    x2, y2 = readFile_returnArray(path2)
-
-    correlation_result = []
-    N = len(y1)
-    M = len(y2)
-    squared_signal1_sum = sum(x ** 2 for x in y1)
-    squared_signal2_sum = sum(x ** 2 for x in y2)
-    NORMALIZATION_CONST = math.sqrt(squared_signal1_sum * squared_signal2_sum) / N
-
-    for tau in range(N):
-        res = 0
-        for k in range(M):
-            res += y1[k] * y2[(k + tau) % M]
-        correlation_result.append(res / N / NORMALIZATION_CONST)
-
-    Compare_Signals_correlation("inOut/task8/CorrOutput.txt",
-                                correlation_result, [])
-
-    return correlation_result
+def fast_convolution(signal1_path, signal2_path):
+    x1, y1 = readFile_returnArray(signal1_path)
+    x2, y2 = readFile_returnArray(signal2_path)
+    mini_n = int(x1[0] + x2[0])
+    maxi_n = int(x1[-1] + x2[-1])
+    indicies = list(range(mini_n, maxi_n + 1))
+    desired_length = len(y1) + len(y2) - 1
+    y1_padded = y1 + [0] * (desired_length - len(y1))
+    y2_padded = y2 + [0] * (desired_length - len(y2))
+    amplitudes1, phases1, real_list1, imaginary_list1 = discrete_fourier_transform(y1_padded,3)
+    amplitudes2, phases2, real_list2, imaginary_list2 = discrete_fourier_transform(y2_padded,3)
+    final_amplitudes = multiply_lists(amplitudes1,amplitudes2)
+    final_phases = add_lists(phases1, phases2)
+    real, imaginary = convert_polar_to_complex(final_amplitudes,final_phases,0)
+    convolved_signal_output = inverse_discrete_fourier_transform(real, imaginary)
+    convolved_signal_output = np.round(convolved_signal_output,1)
+    convolved_signal_output = np.array(convolved_signal_output)
+    convolved_signal_output = convolved_signal_output.astype(int)
+    convolved_signal_output = convolved_signal_output.tolist()
+    ConvTest(indicies,convolved_signal_output)
+    return convolved_signal_output
+ret = fast_convolution("inOut/Convolution/Input_conv_Sig1.txt", "inOut/Convolution/Input_conv_Sig2.txt")
