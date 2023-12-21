@@ -7,12 +7,14 @@ import cosine_wave as cs
 from tkinter import messagebox
 from draw import draw_signal2
 from tkinter import *
-#from inOut.task7.ConvTest import ConvTest
+# from inOut.task7.ConvTest import ConvTest
 from inOut.task8.CompareSignal import Compare_Signals
 from inOut.Convolution.ConvTest import ConvTest
 
+
 def separate_tuples(list_of_tuples):
     return zip(*list_of_tuples)
+
 
 def equalize_arrays(arr1, arr2):
     condition = 0  # which is the smallest variable
@@ -25,7 +27,6 @@ def equalize_arrays(arr1, arr2):
     return arr1, arr2, condition
 
 
-
 def readFile_returnDict(path):
     signal_dict = {}
     with open(path, "r") as file:
@@ -34,6 +35,7 @@ def readFile_returnDict(path):
             x, y = map(float, line.strip().split())
             signal_dict[x] = y
     return signal_dict
+
 
 def readFile_returnComplexComponents(path):
     x_values = []
@@ -47,6 +49,7 @@ def readFile_returnComplexComponents(path):
             y_values.append(x * np.sin(y))
     return x_values, y_values
 
+
 def readFile_returnTuples(path):
     list_of_tuples = []
     with open(path, "r") as file:
@@ -55,6 +58,7 @@ def readFile_returnTuples(path):
             x, y = map(float, line.strip().split())
             list_of_tuples.append((x, y))
     return list_of_tuples
+
 
 def readFile_returnArray(path):
     x_values = []
@@ -120,7 +124,7 @@ def square_signal(path):
 def shift_signal(path, shiftAmount):
     x1, y1 = readFile_returnArray(path)
     x1 = np.array(x1) - shiftAmount
-    create_file(x1,y1, "shifted.txt")
+    create_file(x1, y1, "shifted.txt")
     draw_signal2(x1, y1)
     return x1, y1
 
@@ -215,6 +219,7 @@ def draw_amplitude_phase(amplitudes, phases, fs):
     draw_signal2(multiples_of_X, amplitudes)
     draw_signal2(multiples_of_X, phases)
 
+
 def create_file(x, y, file_name):
     path = "inOut/task6/"
     path += file_name
@@ -229,6 +234,7 @@ def create_file(x, y, file_name):
         # Write the amplitudes and phases
         for a, b in zip(x, y):
             file.write("{} {}\n".format(a, b))
+
 
 def create_file_polar_form(amplitudes, phases):
     path = "inOut/task4/polarForm.txt"
@@ -360,8 +366,8 @@ def smooth_signal(path, window_size):
         end = start + window_size - 1
         if end >= len(y):
             break
-        tmp_window =y[start:end + 1]
-       # print(type(tmp_window)," ",type(window_size))
+        tmp_window = y[start:end + 1]
+        # print(type(tmp_window)," ",type(window_size))
         avg = sum(tmp_window) / len(tmp_window)
         smoothed_signal.append(avg)
     return smoothed_signal
@@ -373,19 +379,20 @@ def convert_polar_to_complex(amplitudes, phases, dc_remove):
     if dc_remove:
         amplitudes[0] = 0
         phases[0] = 0
-    for a,p in zip(amplitudes,phases):
+    for a, p in zip(amplitudes, phases):
         real_num = a * np.cos(p)
         imaginary_num = a * np.sin(p)
         real_list.append(real_num)
         imaginary_list.append(imaginary_num)
     return real_list, imaginary_list
 
+
 def remove_dc_component_frequency_domain(path, fs):
-    x,y = readFile_returnArray(path)
+    x, y = readFile_returnArray(path)
     amplitudes, phases, real_list, imaginary_list = discrete_fourier_transform(y, fs)
-    r, i = convert_polar_to_complex(amplitudes,phases, True)
-    out = inverse_discrete_fourier_transform(r,i)
-    out = np.round(out,3)
+    r, i = convert_polar_to_complex(amplitudes, phases, True)
+    out = inverse_discrete_fourier_transform(r, i)
+    out = np.round(out, 3)
     print("OUT: ", out)
     indices = list(range(len(out)))
     draw_signal2(indices, out)
@@ -399,7 +406,7 @@ def fold_signal(path):
     coordinates.sort()
     x, y = separate_tuples(coordinates)
     create_file(x, y, "folded.txt")
-    draw_signal2(x,y)
+    draw_signal2(x, y)
     return x, y
 
 
@@ -448,10 +455,14 @@ def cross_direct_correlation(signa1_path, signal2_path):
 
     return cross_correlation
 
+
 def multiply_lists(list1, list2):
     return [elem1 * elem2 for elem1, elem2 in zip(list1, list2)]
+
+
 def add_lists(list1, list2):
     return [elem1 + elem2 for elem1, elem2 in zip(list1, list2)]
+
 
 def fast_convolution(signal1_path, signal2_path):
     x1, y1 = readFile_returnArray(signal1_path)
@@ -462,16 +473,62 @@ def fast_convolution(signal1_path, signal2_path):
     desired_length = len(y1) + len(y2) - 1
     y1_padded = y1 + [0] * (desired_length - len(y1))
     y2_padded = y2 + [0] * (desired_length - len(y2))
-    amplitudes1, phases1, real_list1, imaginary_list1 = discrete_fourier_transform(y1_padded,3)
-    amplitudes2, phases2, real_list2, imaginary_list2 = discrete_fourier_transform(y2_padded,3)
-    final_amplitudes = multiply_lists(amplitudes1,amplitudes2)
+    amplitudes1, phases1, real_list1, imaginary_list1 = discrete_fourier_transform(y1_padded, 3)
+    amplitudes2, phases2, real_list2, imaginary_list2 = discrete_fourier_transform(y2_padded, 3)
+    final_amplitudes = multiply_lists(amplitudes1, amplitudes2)
     final_phases = add_lists(phases1, phases2)
-    real, imaginary = convert_polar_to_complex(final_amplitudes,final_phases,0)
+    real, imaginary = convert_polar_to_complex(final_amplitudes, final_phases, 0)
     convolved_signal_output = inverse_discrete_fourier_transform(real, imaginary)
-    convolved_signal_output = np.round(convolved_signal_output,1)
+    convolved_signal_output = np.round(convolved_signal_output, 1)
     convolved_signal_output = np.array(convolved_signal_output)
     convolved_signal_output = convolved_signal_output.astype(int)
     convolved_signal_output = convolved_signal_output.tolist()
-    ConvTest(indicies,convolved_signal_output)
+    ConvTest(indicies, convolved_signal_output)
     return convolved_signal_output
-ret = fast_convolution("inOut/Convolution/Input_conv_Sig1.txt", "inOut/Convolution/Input_conv_Sig2.txt")
+
+
+def get_conjugate(imaginary_list):
+    return [-elem for elem in imaginary_list]
+
+
+def get_amplitudes_list(real_list, imaginary_list):
+    return [np.sqrt(real_part ** 2 + imaginary_part ** 2) for real_part, imaginary_part in
+            zip(real_list, imaginary_list)]
+
+
+def get_phases_list(real_list, imaginary_list):
+    return [np.arctan2(imaginary_part, real_part) for real_part, imaginary_part in zip(real_list, imaginary_list)]
+
+
+def fast_correlation(signal1_path, signal2_path):
+    x1, y1 = readFile_returnArray(signal1_path)
+    x2, y2 = readFile_returnArray(signal2_path)
+    desired_length = len(y1) + len(y2) - 1
+    if (len(y1) != len(y2)):
+        y1_padded = y1 + [0] * (desired_length - len(y1))
+        y2_padded = y2 + [0] * (desired_length - len(y2))
+    else:
+        y1_padded = y1
+        y2_padded = y2
+        desired_length = len(y1)
+    amplitudes1, phases1, real_list1, imaginary_list1 = discrete_fourier_transform(y1_padded, 3)
+    amplitudes2, phases2, real_list2, imaginary_list2 = discrete_fourier_transform(y2_padded, 3)
+    imaginary_list1 = get_conjugate(imaginary_list1)
+    amplitudes1 = get_amplitudes_list(real_list1, imaginary_list1)
+    phases1 = get_phases_list(real_list1, imaginary_list1)
+    final_amplitudes = multiply_lists(amplitudes1, amplitudes2)
+    final_phases = add_lists(phases1, phases2)
+    real, imaginary = convert_polar_to_complex(final_amplitudes, final_phases, 0)
+    correlation_out = inverse_discrete_fourier_transform(real, imaginary)
+    correlation_out = np.round(correlation_out, 2)
+    correlation_out = np.array(correlation_out) / desired_length
+    correlation_out = correlation_out.tolist()
+    Compare_Signals("inOut/Fast Correlation/Corr_Output.txt", [], correlation_out)
+    return correlation_out
+
+
+out = fast_correlation("inOut/Fast Correlation/Corr_input signal1.txt", "inOut/Fast Correlation/Corr_input signal2.txt")
+print(out)
+Compare_Signals("inOut/Fast Correlation/Corr_Output.txt",[],out)
+
+fast_convolution("inOut/Convolution/Input_conv_Sig1.txt", "inOut/Convolution/Input_conv_Sig2.txt")

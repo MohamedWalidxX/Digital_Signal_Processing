@@ -382,7 +382,7 @@ class GUI:
         ConvTest(indices_list, values_list)
 
     def onClickFastConvolve(self,path1,path2):
-        indices_list, values_list = Ar.fast_convolution(path1, path2)
+        values_list = Ar.fast_convolution(path1, path2)
 
 
 
